@@ -25,3 +25,9 @@ echo "开始初始化:"
 
 # tmux 安装
   yum -y install tmux
+
+# 更新 yum 源
+  yum update
+
+# 安装 docker
+  yum -y install docker
