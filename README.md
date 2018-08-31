@@ -5,7 +5,7 @@
 
 ````
 1.bootstrap_master.sh => 虚拟机创建时所要执行的脚本命令
-2.Vagrantfile => 虚拟机的配置文件，带有初始的英文注释
+2.Vagrantfile => 虚拟机的配置文件，带有初始的英文注释(仅仅只是做展示作用，实际开发请使用Vagrantfile-simple)
 3.Vagrantfile-simple => 去除了初始的英文注释，添加中文注释，保留了一些可能要用到的配置项
 ````
 
