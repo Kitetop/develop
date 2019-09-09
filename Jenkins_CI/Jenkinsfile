@@ -1,34 +1,24 @@
 pipeline {
-    agent none
+    agent any
     stages {
-        stage('Docker up') { 
-            agent any
+        stage('Build') {
             steps {
-                echo 'Docker up...'
-                sh 'docker build -f Dockerfile -t maven:latest .'
-                sh 'docker run -d -v /root/.m2:/root/m2 --name=maven maven:latest'
-                sh 'docker cp /root/.m2 maven:/root/.m2' 
-            }
-        }
-
-        stage('Build') { 
-            agent {
-                docker 'maven:latest'
-            }
-            steps {
-                echo 'Build...'
-                sh 'mvn install -Dhttps.proxyHost=${HOST} -Dhttps.proxyPort=${PORT}'
-                sh 'mvn -B -DskipTests clean package' 
+                echo 'Building...'
+                sh 'docker build -f Dockerfile -t test:latest .'
+                sh 'docker run -d -p 3306:3306 --name test test'
             }
         }
 
         stage('Test') {
-            agent {
-                docker 'maven:latest'
-            }
             steps {
-                sh 'mvn test'
+                echo 'Testing...'
+                sh 'mvn clean package --file pom.xml'
             }
         }
-    }
-}
+      }
+      post {
+          always {
+             echo 'Clear....'
+             sh 'docker rm test -f && docker rmi test'
+          }
+    
