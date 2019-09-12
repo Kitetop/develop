@@ -1,5 +1,4 @@
-
-    pipeline {
+pipeline {
     agent any
     stages {
         stage('Build') {
@@ -15,7 +14,6 @@
 				}
                 sh 'cd mysql && docker build -f Dockerfile -t test:latest .'
                 sh 'docker run -d -p 3306:3306 --name test test'
-				echo "{$GIT_COMMIT_MESSAGE}"
             }
         }
 
@@ -30,33 +28,33 @@
           always {
              echo 'Clear....'
              sh 'docker rm test -f && docker rmi test'
-          //}
-		  //failure {
-			emailext body: 
-            	'''<body leftmargin="8" marginwidth="0" topmargin="8" marginheight="4" offset="0">
-    				<table width="95%" cellpadding="0" cellspacing="0"  style="font-size: 11pt; font-family: Tahoma, Arial, Helvetica, sans-serif">
-        				<tr>
-            				<td>
-            					<b><font color="#0B610B">Build Summary</font></b>
-            					<hr size="2" width="100%" align="center" />
-            				</td>
-        				</tr>
-        				<tr>
-            				<td>
-                				<ul>
-                    				<li>Project Name: ${PROJECT_NAME}</li>
-                    				<li>Build Status: ${BUILD_STATUS}</li>
-									<li>Commit Message:'''+ "${GIT_COMMIT_MESSAGE}"+ '''</li>
-                    				<li>Build Log: <a href="${BUILD_URL}console">${BUILD_URL}console</a></li>
-                    				<li>Project Url: <a href="${PROJECT_URL}">${PROJECT_URL}</a></li>
-                				</ul>
-            				</td>
-        				</tr>
-    				</table>
-				</body>''', 
-			subject: '[Jenkins Build Notification] ${PROJECT_NAME} - Build # ${BUILD_NUMBER} - ${BUILD_STATUS}!', 
-			to: "${GIT_COMMIT_EMAIL}", 
-			from: 'Master'
+          }
+		  success {
+			script {
+				mail(true)
+			}
+			jacoco deltaLineCoverage: '85', 
+			maximumLineCoverage: '90', 
+			minimumLineCoverage: '80'
+		  }
+		  failure {
+			  script {
+				  mail(false)
+			  }
 		  }
       }
+}
+def getMailBody(flage) {
+	if(flage) {
+		context = readFile file:'SuccessTemplate.html', encoding: 'UTF-8'
+	} else {
+		context = readFile file:'FailureTemplate.html', encoding: 'UTF-8'
+	}
+	return context
+}
+def mail(flage) {
+	emailext body: getMailBody(flage),
+	subject: '[Jenkins Build Notification] ${PROJECT_NAME} - Build # ${BUILD_NUMBER} - ${BUILD_STATUS}!', 
+	to: "${GIT_COMMIT_EMAIL}", 
+	from: 'Master' 
 }
