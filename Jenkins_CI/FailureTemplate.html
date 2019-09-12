@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>[Jenkins Build Notification] ${PROJECT_NAME} - Build # ${BUILD_NUMBER} - ${BUILD_STATUS}!</title>
+</head>
+<body leftmargin="8" marginwidth="0" topmargin="8" marginheight="4" offset="0">
+    <table width="95%" cellpadding="0" cellspacing="0"
+        style="font-size: 11pt; font-family: Tahoma, Arial, Helvetica, sans-serif">
+        <tr>
+            <p style="font-size: 30px">This email is sent automatically by the system, no reply is required!<br />
+                Hello, colleagues, here is the ${PROJECT_NAME} project construction information</br></p>
+            <hr />
+            <td>
+                <font style="font-size: 40px" color="#CC0000">Construction Result —— ${BUILD_STATUS}</font>
+            </td>
+        </tr>
+        <tr>
+            <td><br />
+                <b>
+                    <font color="#0B610B">Construction Message</font>
+                </b>
+                <hr size="2" width="100%" align="center" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <ul>
+                    <li>Project Name: ${PROJECT_NAME}</li>
+                    <li>Cobstruction Number: ${BUILD_NUMBER}</li>
+                    <li>Trigger Reason: ${CAUSE}</li>
+                    <li>Cobstruction Status: ${BUILD_STATUS}</li>
+                    <li>Log: <a href="${BUILD_URL}console">${BUILD_URL}console</a></li>
+                    <li>Coverage Report: <a href="${BUILD_URL}jacoco">${BUILD_URL}jacoco</a> </li>
+                    <li>Project Url : <a href="${PROJECT_URL}">${PROJECT_URL}</a></li>
+                </ul>
+
+                <h4>
+                    <font color="#CC0000">Failure Case</font>
+                </h4>
+                <hr size="2" width="100%" />
+                $FAILED_TESTS<br />
+
+                <h4>
+                    <font color="#0B610B">Recent Submission</font>
+                </h4>
+                <hr size="2" width="100%" />
+                <ul>
+                    ${CHANGES_SINCE_LAST_SUCCESS, reverse=true, format="%c", changesFormat="<li>%d [%a] %m</li>"}
+                </ul>
+                Submission Details:<a href="${PROJECT_URL}changes">${PROJECT_URL}changes</a><br />
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
