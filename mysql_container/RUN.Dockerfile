@@ -1,4 +1,4 @@
-FROM kitetop/mysql:1.1.0
+FROM kitetop/mysql:1.2.0
 COPY ./setup.sh /usr/sbin/
 COPY mysql.sql /
 RUN chmod 777 /usr/sbin/setup.sh && chmod 777 /mysql.sql

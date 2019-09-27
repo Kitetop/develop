@@ -5,6 +5,7 @@ RUN yum update -y \
     && yum-config-manager --disable mysql80-community \
     && yum-config-manager --enable mysql57-community \
     && yum install mysql-community-server -y \ 
+    && yum install -y dos2unix
 RUN chown -R mysql:mysql /var/lib/mysql 
 RUN cd /var/lib/mysql && rm -rf *
 RUN mysqld --initialize-insecure --user=mysql
